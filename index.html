@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Ember</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#fff8f1;--card:#fff;--ink:#2b2433;--mute:#8a8194;--acc:#ff6b6b;--acc2:#ffb347;--line:#f0e6dc;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17141c;--card:#231f2b;--ink:#f5f0fa;--mute:#9b92a8;--line:#322d3c}}
+:root[data-theme="ocean"]{--bg:#0b2239;--card:#12314d;--ink:#e8f4ff;--mute:#8fb3cf;--acc:#1e90ff;--acc2:#00c2b8;--line:#1f4a6b}
+:root[data-theme="pink"]{--bg:#fff0f6;--card:#fff;--ink:#4a2038;--mute:#a07890;--acc:#ff4fa3;--acc2:#ffa6d5;--line:#ffd6ea}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;max-width:480px;margin:0 auto;padding:16px 16px calc(72px + env(safe-area-inset-bottom,0px))}
+h1{font-size:26px;margin:8px 0 2px}.sub,.m{color:var(--mute)}.sub{margin:0 0 16px}.m{font-size:13px}
+#app,.card{position:relative;z-index:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+:root[data-theme="pink"] .card,:root[data-theme="ocean"] .card{background:color-mix(in srgb,var(--card) 88%,transparent)}
+h2{font-size:15px;margin:0 0 10px}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#bg span{position:absolute;opacity:.3;animation:fl 7s ease-in-out infinite alternate}
+@keyframes fl{to{transform:translateY(-22px) rotate(12deg) scale(1.15)}}
+@keyframes up{0%{transform:translateY(0) rotate(0);opacity:0}12%{opacity:.55}100%{transform:translateY(-112vh) rotate(25deg);opacity:0}}
+#hero{display:flex;justify-content:space-around;font-size:40px;margin-bottom:8px}#hero span{animation:fl 3s ease-in-out infinite alternate}
+.moods{display:flex;gap:8px}.moods button{flex:1;font-size:26px;padding:10px 0;border-radius:14px;border:2px solid var(--line);background:var(--bg);cursor:pointer}
+.moods button.on{border-color:var(--acc);transform:scale(1.06)}
+.habit{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}.habit:first-of-type{border-top:0}
+.chk{width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:var(--bg);font-size:18px;cursor:pointer;color:#fff;flex:none}
+.chk.on{background:linear-gradient(135deg,var(--acc),var(--acc2));border-color:transparent}
+.nm{flex:1;min-width:0}.nm b{display:block;overflow-wrap:anywhere}
+.dots{display:flex;gap:4px;margin-top:5px}.dots i{width:12px;height:12px;border-radius:50%;background:var(--line)}.dots i.on{background:var(--acc)}
+.st{font-weight:700;color:var(--acc);white-space:nowrap}
+.del{background:none;border:0;color:var(--mute);font-size:18px;cursor:pointer}
+.add,.row{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+input,textarea,select{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:16px;font-family:inherit;margin-top:8px}
+.add input{flex:1;width:auto;margin:0;min-width:0}
+.btn{padding:12px 16px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+.full{width:100%;margin-top:12px}
+.chart{display:flex;align-items:flex-end;gap:6px;height:70px}
+.chart div{flex:1;background:var(--line);border-radius:6px 6px 0 0;display:flex;justify-content:center;font-size:14px;min-height:8px}
+.pro{border:2px dashed var(--acc)}.ban{background:linear-gradient(135deg,var(--acc),var(--acc2))!important;color:#fff;font-weight:700}
+.fine{font-size:12px;color:var(--mute);text-align:center;margin-top:8px}.err{color:#e5484d;font-size:14px;min-height:18px;margin-top:6px}
+.tabs{display:flex;gap:6px}.tabs button,.gb{flex:1;padding:11px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;font-size:15px}
+.tabs button.on,.gb.on{border-color:var(--acc);font-weight:700}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 12px;text-align:center;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;gap:6px;position:relative;z-index:1}
+.tile span{font-size:38px}.tile small{color:var(--mute)}
+.big{font-size:20px;line-height:1.5;font-weight:600;padding:14px;border-radius:14px;background:var(--bg)}
+.orb{width:130px;height:130px;margin:18px auto;border-radius:50%;background:radial-gradient(circle,var(--acc2),var(--acc));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;text-align:center;transition:transform 4s ease-in-out}.orb.in{transform:scale(1.35)}
+.badges{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.bd{text-align:center;padding:12px 6px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:12px}.bd span{font-size:34px;display:block}.bd.lock{opacity:.4;filter:grayscale(1)}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;justify-content:center;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;max-width:120px;background:none;border:0;color:var(--mute);font-size:22px;cursor:pointer}nav button small{display:block;font-size:11px}nav button.on{color:var(--acc);font-weight:700}
+.modal{position:fixed;inset:0;background:#000a;display:none;align-items:flex-end;justify-content:center;z-index:9}.modal.show{display:flex}
+.sheet{background:var(--card);width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+.sheet ul{padding-left:20px;line-height:1.7}.plans{display:flex;gap:10px;margin:14px 0}
+.plan{flex:1;border:2px solid var(--line);border-radius:14px;padding:12px;text-align:center;cursor:pointer}.plan.on{border-color:var(--acc)}.plan b{display:block;font-size:20px}
+a{color:var(--acc);cursor:pointer}
+#app{display:flex;flex-direction:column;min-height:calc(100dvh - 100px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+#app>.card.fill{flex:1;display:flex;flex-direction:column;margin-bottom:0}
+.big{flex:1;display:flex;align-items:center;justify-content:center;text-align:center}
+.fill .orb{margin:auto auto 14px}
+.tiles{flex:1;grid-auto-rows:1fr}
+.tile{justify-content:center}
+.tile.wide{grid-column:1/-1;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:0}
+.tile.wide small{color:#ffffffcc}.tile.wide span{font-size:52px}
+.badges{flex:1;grid-auto-rows:1fr}.bd{display:flex;flex-direction:column;justify-content:center}
+.back{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:0;border-radius:22px;padding:10px 20px;font-size:17px;font-weight:800;cursor:pointer;margin-bottom:6px;box-shadow:0 3px 10px #0002}
+.card.fill,:root[data-theme] .card.fill{background:color-mix(in srgb,var(--card) 60%,transparent)}
+.cmp{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}.cmp td,.cmp th{padding:9px 4px;border-bottom:1px solid var(--line);text-align:center}.cmp td:first-child,.cmp th:first-child{text-align:left}.cmp th:last-child,.cmp td:last-child{color:var(--acc);font-weight:700}
+.plan{position:relative;padding-top:16px}.plan i{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--acc);color:#fff;font-size:10px;font-style:normal;font-weight:800;padding:2px 8px;border-radius:8px;white-space:nowrap}.plan small{font-size:11px;color:var(--mute)}
+.mas{text-align:center}.face{display:inline-block;animation:bob 2s ease-in-out infinite;cursor:pointer}.face.sleep{filter:grayscale(.9);opacity:.6;animation:none}.face.hop{animation:hop .5s}
+.say{font-weight:700;margin:6px 0}.bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+@keyframes bob{50%{transform:translateY(-8px) scale(1.04)}}@keyframes hop{40%{transform:translateY(-30px) scale(1.2)}}
+.rc{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}.rc b{display:block;font-size:30px}
+.tiles{flex:none;grid-auto-rows:minmax(112px,auto)}
+.tile{color:#fff;overflow:hidden;border:0}.tile>*:not(.dc){position:relative}.tile small{color:#fffd}.tile span{animation:bob 3s ease-in-out infinite}
+.pill{background:#0000003a;border-radius:12px;padding:3px 12px;font-size:16px}
+.dc{position:absolute;inset:-10px;font-size:30px;opacity:.2;line-height:1.15;word-break:break-all;letter-spacing:8px;pointer-events:none;animation:drift 10s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(-14px,10px) rotate(4deg)}}
+.hm{display:grid;grid-template-rows:repeat(7,12px);grid-auto-flow:column;grid-auto-columns:12px;gap:3px;overflow-x:auto;padding-bottom:6px}.hm i{background:var(--line);border-radius:3px;display:block}
+:root[data-theme="sunset"]{--bg:#fff1e6;--card:#fff;--ink:#4a2a1f;--mute:#a97b68;--acc:#ff7a45;--acc2:#ffc13b;--line:#ffd9bf}
+:root[data-theme="galaxy"]{--bg:#0e0b24;--card:#1a1540;--ink:#efeaff;--mute:#a79bd6;--acc:#8b5cf6;--acc2:#38bdf8;--line:#2e2766}
+:root[data-theme="neon"]{--bg:#0a0a12;--card:#14141f;--ink:#f2fff9;--mute:#88a8a0;--acc:#00f5a0;--acc2:#00d9f5;--line:#1f2a2e}
+:root[data-theme="sunset"] .card,:root[data-theme="galaxy"] .card,:root[data-theme="neon"] .card{background:color-mix(in srgb,var(--card) 88%,transparent)}
+</style></head><body>
+<div id="bg"></div><div id="app"></div><nav id="nav"></nav>
+<div class="modal" id="modal"><div class="sheet" style="height:100%;max-height:100dvh;border-radius:0;overflow:auto;display:flex;flex-direction:column">
+<button class="del" id="close" style="align-self:flex-end;font-size:26px">✕</button>
+<div style="text-align:center;font-size:56px">🔥</div><h2 style="font-size:26px;text-align:center;margin:4px 0">Unlock Ember Pro</h2><p class="m" style="text-align:center;margin:0">Everything you need to stay hyped</p>
+<table class="cmp"><tr><th></th><th>Free</th><th>Pro</th></tr><tr><td>Habits</td><td>3</td><td>Unlimited</td></tr><tr><td>Mood, streaks &amp; badges</td><td>✓</td><td>✓</td></tr><tr><td>Hype Zone (5 pages)</td><td>—</td><td>✓</td></tr><tr><td>Hype made for you</td><td>—</td><td>✓</td></tr><tr><td>Ocean &amp; Pink themes</td><td>—</td><td>✓</td></tr><tr><td>Insights, programs &amp; focus timer</td><td>—</td><td>✓</td></tr><tr><td>Skins, themes &amp; year view</td><td>—</td><td>✓</td></tr><tr><td>Schedules, notes &amp; buddy</td><td>—</td><td>✓</td></tr><tr><td>Ember buddy, XP &amp; daily quests</td><td>—</td><td>✓</td></tr><tr><td>Streak freeze &amp; weekly recap</td><td>—</td><td>✓</td></tr><tr><td>Sounds, cheers &amp; starter packs</td><td>—</td><td>✓</td></tr><tr><td>Cloud sync &amp; friends</td><td>✓</td><td>✓</td></tr></table>
+<div class="plans"><div class="plan" data-p="m"><b>$3.99</b>month</div><div class="plan on" data-p="y"><i>BEST VALUE · SAVE 48%</i><b>$24.99</b>year</div><div class="plan" data-p="l"><b>$49.99</b>lifetime</div></div>
+<button class="btn" id="buy">Subscribe</button>
+<div class="fine">Cancel anytime. Secure payment by Flutterwave.</div>
+<div class="fine"><a>Restore purchase</a> · <a>Terms</a> · <a>Privacy</a></div></div></div>
+<script>
+const FREE=3,MOODS=['😞','😕','😐','🙂','😄'];
+const G={
+f:{call:'queen',hype:['{n}, you are UNSTOPPABLE, queen! Walk in like the room was made for you 👑','Boss babe energy only today, {n}. You glow, you grow, you go! ✨','{n}, she believed she could, so she DID. Go be her 💅','Main character energy, {n}. Today is YOUR episode 🎬','Hair done, goals set, nothing can stop you, {n}! 💖','You were not made to blend in, {n}. Shine louder, girl 🌟'],
+enc:['{n}, you are doing better than you think, girl. Be gentle with yourself 💖','Your feelings are valid and so are your dreams, {n}. Keep going 🌸','Rest if you must, queen, but never quit. I believe in you 🦋','Comparison steals your joy, {n}. Your pace is perfect 🌷','You have survived every hard day so far, {n}. That is power 💪','Be proud of how far you have come, {n}. Truly 🥹']},
+m:{call:'king',hype:['{n}, LOCK IN, king! Today you build the man you will be proud of 💪','No excuses, {n}. Stack the wins, own the day, run it! 🔥','{n}, you are built for this. Get up, show up, and dominate 🦈','Discipline over motivation, {n}. Do the work and watch it pay 🏆','Another day, another rep, {n}. Get after it! ⚓','Eyes on the goal, {n}. Nobody is coming to save you, so be the force 🌊'],
+enc:['{n}, tough days build strong men. You got this, brother 🌊','Feeling it is fine, {n}. Real strength is getting back up 🧭','Take a breath, king. One step at a time still moves you forward ⚓','It is okay to ask for help, {n}. That is strength too 🤝','A slow day is still progress, {n}. Keep your head up 🐋','You are more than your worst day, {n}. Keep sailing 🚢']},
+n:{call:'superstar',hype:['{n}, you are a SUPERSTAR. Go shine today! 🌟','Big energy, {n}! Small steps, huge results. Let us go! 🚀','{n}, nobody can do you like you do. Own it! 🔥','Today is yours, {n}. Make it count! 🎯','You have got this, {n}. Charge forward! ⚡','Be bold, {n}. The world needs your spark ✨'],
+enc:['{n}, you are enough, exactly as you are 💛','Hard day? It will pass, {n}. You are stronger than it 🌈','One breath, one step, {n}. You are doing great 🌱','Be kind to yourself today, {n}. You deserve it 🫶','Progress is not always loud, {n}. Keep going 🌤️','You are not behind, {n}. You are on your own path 🧭']}};
+const EM={hug:['Sending you the biggest hug, {n}. You are loved, {c} 🤗','Come here, {n}. Breathe. You are not alone 🫂','A warm hug for you, {c}. You matter so much 💖'],mad:['Frustration means you care, {n}. Breathe, then take one small step 🌬️','It is okay to be mad, {c}. Let it out, then let it go 🌊','Pause. Shake it off. You are still in control, {n} 💪'],low:['Low days pass, {n}. You do not have to fix everything today 🌤️','You are not failing, {c}. You are just tired. Rest is progress 🌙','Reach out to someone you trust today, {n}. You deserve support 🫶']};
+const TIPS=['Drink a glass of water first thing in the morning.','A 10 minute walk lifts your mood and energy.','Aim for a regular bedtime. Your brain loves routine.','Screens off 30 minutes before bed helps you sleep.','Add something green to one meal today.'];
+const SECS=[['hype','🔥','Hype','Get fired up'],['med','🧘','Meditate','Breathe and reset'],['unw','🌙','Unwind','Rewind your day'],['well','💪','Wellness','Water, sleep, move'],['enc','💌','Encourage','A kind pep talk']];
+const CH={pink:['🦄','🎀','🌸','🦋','💖','🧁','✨','🌷'],ocean:['🦈','🐙','🐋','⚓','🐢','🦀','🌊','🐬'],sunset:['🌅','🌴','🦩','🍹','☀️','🐚'],galaxy:['🪐','🌌','🚀','⭐','👽','☄️'],neon:['⚡','🎮','💿','🕹️','🌈','🎧']};
+const PG={enc:['💖','🦋','🌸','🌈','💌','🕊️','🌷','💛','🫶'],hype:['🔥','⚡','🚀','💥','🏆'],med:['🕊️','🌿','🪷','🌙','☁️'],unw:['🌙','⭐','☁️','🦉','🕯️'],well:['💧','🥗','🏃','🍎','🌞'],friends:['👯','🎉','🏅','🔥'],focus:['⏱️','🎧','📚','🌿','✨'],ins:['📊','💡','🔍','✨'],prog:['🗓️','🌅','🌙','🌿'],year:['📆','🔥','✨']};
+let DB=null,UID=null,Q=[],Q2=[],pt;
+let S={accts:{},cur:null,habits:[],moods:{},pro:false,theme:'',rewind:{},well:{},med:0,rem:{on:false,t:'20:00'},qd:{},medd:{},frz:{},fz:2,snd:true,notes:{},pg:{},pgd:{},focus:0,skin:'🔥',buddy:null,hi:0,pgSel:'calm'};
+try{const r=localStorage.getItem('streaks2');if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+const save=()=>{try{localStorage.setItem('streaks2',JSON.stringify(S))}catch(e){}clearTimeout(pt);pt=setTimeout(push,1500)};
+const $=i=>document.getElementById(i),A=()=>$('app'),U=()=>S.accts[S.cur]||{};
+const key=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const ago=n=>{const d=new Date();d.setDate(d.getDate()-n);return d},today=key(new Date());
+const hm=()=>{const n=new Date();return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pick=a=>a[Math.floor(Math.random()*a.length)],fill=t=>t.replace('{n}',U().name||'friend');
+const off=(h,i)=>h.d&&!h.d.includes(ago(i).getDay());
+function streak(h){let n=0,i=h.done.includes(today)?0:1;while(i<400&&(h.done.includes(key(ago(i)))||S.frz[key(ago(i))]||off(h,i))){if(h.done.includes(key(ago(i))))n++;i++}return n}
+function best(h){const s=new Set(h.done);let b=0;h.done.forEach(k=>{const d=new Date(k+'T12:00:00');d.setDate(d.getDate()-1);if(!s.has(key(d))){let n=1,e=new Date(k+'T12:00:00');for(;;){e.setDate(e.getDate()+1);if(s.has(key(e)))n++;else break}b=Math.max(b,n)}});return b}
+const mb=()=>Math.max(0,...S.habits.map(best));
+const BD=[['🌱','First step','Complete a habit',()=>S.habits.some(h=>h.done.length)],['🔥','3-day streak','3 days in a row',()=>mb()>=3],['⚡','7-day streak','7 days in a row',()=>mb()>=7],['🏆','30-day streak','30 days in a row',()=>mb()>=30],['🌈','Mood tracker','Log mood 5 days',()=>Object.keys(S.moods).length>=5],['💧','Hydrated','8 glasses in a day',()=>Object.values(S.well).some(w=>w.w>=8)],['🧘','Zen','Finish a meditation',()=>S.med>0],['🌙','Reflective','Write an unwind entry',()=>Object.values(S.rewind).some(r=>r.a||r.b||r.c)],['⭐','Pro','Go Pro',()=>S.pro]];
+let page='auth',mode='up',sg='n',msg={},timer=null;
+const SEC=SECS.map(s=>s[0]),NAVP=['home','zone','badges','friends','me'];
+function go(p){if((SEC.includes(p)||['recap','ins','prog','focus','year','hedit'].includes(p))&&!S.pro){openM();return}page=p;render();window.scrollTo(0,0)}
+function bind(){A().querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));A().querySelectorAll('[data-pro]').forEach(b=>b.onclick=openM)}
+const hd=(t,b='zone')=>'<button class="back" data-go="'+b+'">← Back</button><h1>'+t+'</h1>';
+function render(){clearInterval(timer);document.documentElement.dataset.theme=S.pro?S.theme:'';
+ const th=CH[S.pro?S.theme:'']||[],c=(PG[page]||[]).concat(th.length?th:['✨','🔥','🌟','💫']),B=$('bg'),N=page==='enc'?30:18;B.innerHTML='';
+ for(let i=0;i<N;i++){const s=document.createElement('span'),up=i%3!==0,d=7+(i*7)%9;s.textContent=c[i%c.length];
+  s.style.cssText='left:'+((i*37+11)%94)+'%;font-size:'+(26+(i%5)*9)+'px;'+(up?'bottom:-70px;animation:up '+(d+4)+'s linear '+(i%9)*1.3+'s infinite':'top:'+((i*53+7)%88)+'%;animation:fl '+(4+i%4)+'s ease-in-out '+(i%5)*.6+'s infinite alternate');B.append(s)}
+ (P[page]||P.home)();
+ $('nav').style.display=NAVP.includes(page)?'flex':'none';
+ $('nav').innerHTML=[['home','🏠','Home'],['zone','🔥','Hype Zone'],['badges','🏅','Badges'],['friends','👯','Friends'],['me','👤','Me']].map(([p,e,l])=>'<button data-nv="'+p+'" class="'+((page===p||(SEC.includes(page)||['ins','prog','focus','year'].includes(page))&&p==='zone')?'on':'')+'">'+e+'<small>'+l+'</small></button>').join('');
+ document.querySelectorAll('[data-nv]').forEach(b=>b.onclick=()=>go(b.dataset.nv));
+}
+const P={};
+P.auth=()=>{const up=mode==='up';
+ A().innerHTML='<div style="text-align:center;font-size:64px;margin-top:24px">🔥</div><h1 style="text-align:center">Ember</h1><p class="sub" style="text-align:center">Build habits. Get hyped.</p><div class="card"><div class="tabs"><button id="tu" class="'+(up?'on':'')+'">Sign up</button><button id="ti" class="'+(up?'':'on')+'">Sign in</button></div><input id="em" type="email" placeholder="Email" autocomplete="email"><input id="pw" type="password" placeholder="Password (6+ characters)"><div class="err" id="err"></div><button class="btn full" id="go" style="margin-top:4px">'+(up?'Create account':'Sign in')+'</button></div><div class="fine">Demo: accounts are stored on this device only.</div>';
+ $('tu').onclick=()=>{mode='up';render()};$('ti').onclick=()=>{mode='in';render()};
+ $('go').onclick=()=>{const e=$('em').value.trim().toLowerCase(),p=$('pw').value,er=$('err');
+  if(!/^\S+@\S+\.\S+$/.test(e)){er.textContent='Please enter a valid email.';return}
+  if(p.length<6){er.textContent='Password must be at least 6 characters.';return}
+  if(up){if(S.accts[e]){er.textContent='That email already has an account. Try signing in.';return}S.accts[e]={pw:btoa(p)};S.cur=e;save();page='setup';render()}
+  else{if(!S.accts[e]||S.accts[e].pw!==btoa(p)){er.textContent='Email or password is incorrect.';return}S.cur=e;save();page=U().name?'home':'setup';render()}}};
+P.setup=()=>{A().innerHTML='<h1 style="margin-top:24px">Welcome! 🎉</h1><p class="sub">Tell us a bit about you so we can hype you up the right way.</p><div class="card fill"><h2>What should we call you?</h2><input id="nm" placeholder="Your name" maxlength="20"><h2 style="margin-top:16px">Hype me up like a...</h2><div class="row"><button class="gb" data-g="f">👧 Girl</button><button class="gb" data-g="m">👦 Guy</button><button class="gb" data-g="n">⭐ Neutral</button></div><div class="err" id="err"></div><button class="btn full" id="ct" style="margin-top:auto">Continue</button></div>';
+ const gs=()=>document.querySelectorAll('.gb').forEach(x=>x.classList.toggle('on',x.dataset.g===sg));gs();
+ document.querySelectorAll('.gb').forEach(b=>b.onclick=()=>{sg=b.dataset.g;gs()});
+ $('ct').onclick=()=>{const n=$('nm').value.trim();if(!n){$('err').textContent='Please enter your name.';return}S.accts[S.cur].name=n;S.accts[S.cur].g=sg;msg={};save();go('home');setTimeout(openM,500)}};
+P.home=()=>{const u=U(),d=S.habits.filter(h=>h.done.includes(today)).length,late=S.rem.on&&hm()>=S.rem.t&&d<S.habits.length,th=CH[S.pro?S.theme:'']||['🔥','✨','🌟','💪','🎯'];
+ let ch='';for(let i=6;i>=0;i--){const v=S.moods[key(ago(i))];ch+='<div style="height:'+(v?v*20+'%':'8px')+';'+(v?'background:linear-gradient(var(--acc),var(--acc2))':'')+'">'+(v?MOODS[v-1]:'')+'</div>'}
+ const rows=S.habits.map((h,i)=>{const on=h.done.includes(today);let dots='';for(let k=6;k>=0;k--)dots+='<i class="'+(h.done.includes(key(ago(k)))?'on':'')+'"></i>';
+  return '<div class="habit" style="'+(off(h,0)?'opacity:.5':'')+'"><button class="chk '+(on?'on':'')+'" data-c="'+i+'">'+(on?'✓':'')+'</button><div class="nm"><b>'+esc(h.name)+(off(h,0)?' · rest day 😴':'')+'</b><div class="dots">'+dots+'</div></div><span class="st">'+streak(h)+'🔥</span><button class="del" data-e="'+i+'">⚙️</button><button class="del" data-d="'+i+'">✕</button></div>'}).join('')||'<p class="m" style="margin:0">Add your first habit below 👇</p>';
+ A().innerHTML='<div id="hero">'+th.slice(0,5).map(x=>'<span>'+x+'</span>').join('')+'</div><h1>Hey '+esc(u.name)+', '+G[u.g].call+'! 👋</h1><p class="sub">'+new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})+'</p>'+(late?'<div class="card ban">⏰ Daily check-in time! You still have habits left today.</div>':'')+
+ proHome()+'<div class="card"><h2>How are you feeling?</h2><div class="moods">'+MOODS.map((m,i)=>'<button data-m="'+(i+1)+'" class="'+(S.moods[today]===i+1?'on':'')+'">'+m+'</button>').join('')+'</div></div>'+
+ '<div class="card"><h2>Today\'s habits <span class="m">'+(S.habits.length?d+'/'+S.habits.length:'')+'</span></h2>'+rows+'<div class="add"><input id="new" placeholder="New habit, e.g. Drink water 💧" maxlength="40"><button class="btn" id="ab">Add</button></div><div class="fine">'+(S.pro?'':'Free plan: '+S.habits.length+'/'+FREE+' habits')+'</div></div>'+
+ '<div class="card"><h2>Mood this week</h2><div class="chart">'+ch+'</div></div>';
+ A().querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{S.moods[today]=+b.dataset.m;save();render()});
+ A().querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const h=S.habits[b.dataset.c];h.done=h.done.includes(today)?h.done.filter(x=>x!==today):h.done.concat(today);if(h.done.includes(today)){burst();chime()}save();render()});
+ A().querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{S.habits.splice(b.dataset.d,1);save();render()});
+ const add=()=>{const v=$('new').value.trim();if(!v)return;if(!S.pro&&S.habits.length>=FREE){openM();return}S.habits.push({name:v,done:[]});save();render()};
+ $('ab').onclick=add;$('new').onkeydown=e=>{if(e.key==='Enter')add()};proBind();bind()};
+const TC={hype:['#ff6b6b','#ffb347','🔥⚡💥'],med:['#5b7cfa','#a78bfa','🕊️🪷☁️'],unw:['#3b3f8f','#7c6cf0','🌙⭐🦉'],well:['#22b07d','#a3e635','💧🥗🏃'],enc:['#ff6fa8','#ffc2dd','💖🦋🌸'],ins:['#00a884','#55efc4','📊💡🔍'],prog:['#e17055','#fdcb6e','🗓️🌿🌅'],focus:['#0984e3','#74b9ff','⏱️🎧📚'],year:['#6c5ce7','#fd79a8','📆🔥✨']};
+const LAB=[['ins','📊','Insights','Your patterns'],['prog','🗓️','Programs','7-day journeys'],['focus','⏱️','Focus','25 min timer'],['year','📆','Year view','Heatmap & export']];
+const tile=(id,e,t,d,w)=>{const c=TC[id];return '<button class="tile'+(w?' wide':'')+'" data-go="'+id+'" style="background:linear-gradient(135deg,'+c[0]+','+c[1]+')"><div class="dc">'+c[2].repeat(14)+'</div><span>'+e+'</span><b class="pill">'+t+'</b><small>'+(S.pro?d:'🔒 Pro')+'</small></button>'};
+P.zone=()=>{const u=U();A().innerHTML='<div class="card mas" style="padding:10px"><div class="face" id="mf" style="font-size:54px">'+(S.pro?S.skin||'🔥':'🔥')+'</div><div class="say">What is the vibe today, '+G[u.g].call+'?</div></div><div class="tiles">'+SECS.map(([id,e,t,d])=>tile(id,e,t,d,id==='hype')).join('')+'</div><h2 style="margin:18px 0 10px">🧪 Ember Lab</h2><div class="tiles">'+LAB.map(([id,e,t,d])=>tile(id,e,t,d)).join('')+'</div>';bind();proBind()};
+function msgPage(t,title,btn){msg[t]=msg[t]||fill(pick(G[U().g][t]));
+ A().innerHTML=hd(title)+'<div class="card fill"><div class="big">'+esc(msg[t])+'</div><button class="btn full" id="nx">'+btn+'</button>'+(t==='enc'?'<p class="m" style="margin:14px 0 0">How are you feeling right now?</p><div class="row" id="mc" style="margin-top:6px"></div>':'')+'</div>';
+ $('nx').onclick=()=>{let n;do{n=fill(pick(G[U().g][t]))}while(n===msg[t]);msg[t]=n;render()};
+ if(t==='enc')[['🤗','Need a hug','hug'],['😤','Frustrated','mad'],['😔','Feeling low','low']].forEach(([e,l,k])=>{const b=document.createElement('button');b.className='gb';b.textContent=e+' '+l;b.onclick=()=>{msg.enc=fill(pick(EM[k])).replace('{c}',G[U().g].call);burst(['💖','🦋','🌸','🌈','🫶']);render()};$('mc').append(b)});bind()}
+P.hype=()=>msgPage('hype','🔥 Hype','Hype me up again! 🔥');
+P.enc=()=>msgPage('enc','💌 Encourage','Encourage me 💌');
+P.med=()=>{A().innerHTML=hd('🧘 Meditate')+'<div class="card fill"><div class="orb" id="orb">Ready</div><div class="m" id="left" style="text-align:center">Pick a length and breathe with the circle</div><div class="row"><button class="btn" data-m="1">1 min</button><button class="btn" data-m="3">3 min</button><button class="btn" data-m="5">5 min</button></div></div>';bind();
+ A().querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{clearInterval(timer);bell();const st=Date.now(),end=st+b.dataset.m*60000;
+  timer=setInterval(()=>{const r=end-Date.now(),o=$('orb');if(!o){clearInterval(timer);return}
+   if(r<=0){clearInterval(timer);o.className='orb';o.textContent='Well done 🙏';$('left').textContent='Carry that calm with you.';S.med++;S.medd[today]=1;save();bell();return}
+   const inn=((Date.now()-st)%8000)<4000;o.className='orb'+(inn?' in':'');o.textContent=inn?'Breathe in':'Breathe out';
+   $('left').textContent=Math.floor(r/60000)+':'+String(Math.floor(r%60000/1000)).padStart(2,'0')+' left'},250)})};
+P.unw=()=>{const R=S.rewind[today]||(S.rewind[today]={});A().innerHTML=hd('🌙 Unwind')+'<div class="card fill"><p class="m" style="margin-top:0">Rewind your day, then let it go.</p><div id="tx"></div><p class="m" style="margin-top:auto">You did enough today, '+esc(U().name)+'. Rest well.</p></div>';bind();
+ [['a','Best moment of today'],['b','Something to let go of'],['c','Something I am grateful for']].forEach(([k,l])=>{const t=document.createElement('textarea');t.rows=2;t.placeholder=l;t.value=R[k]||'';t.oninput=()=>{R[k]=t.value;save()};$('tx').append(t)})};
+P.well=()=>{const W=S.well[today]||(S.well[today]={w:0,s:7,mv:0,st:0,gr:0});
+ A().innerHTML=hd('💪 Wellness')+'<div class="card fill"><div class="row" style="margin-top:0"><b style="flex:1">💧 Water: '+W.w+'/8</b><button class="btn" id="wm">−</button><button class="btn" id="wp">+</button></div><div class="row"><b style="flex:1">😴 Sleep</b><select id="sl" style="width:auto;margin:0"></select></div><div class="row" id="ck"></div><p class="m" style="margin-top:auto">💡 '+TIPS[new Date().getDate()%TIPS.length]+'</p></div>';bind();
+ for(let h=4;h<=10;h++){const o=document.createElement('option');o.value=h;o.textContent=h+' hours';if(h===W.s)o.selected=true;$('sl').append(o)}
+ $('sl').onchange=e=>{W.s=+e.target.value;save()};$('wm').onclick=()=>{W.w=Math.max(0,W.w-1);save();render()};$('wp').onclick=()=>{W.w=Math.min(12,W.w+1);save();render()};
+ [['mv','🏃 10 min move'],['st','🧘 Stretch'],['gr','🥗 Greens']].forEach(([k,l])=>{const b=document.createElement('button');b.className='gb'+(W[k]?' on':'');b.textContent=l;b.onclick=()=>{W[k]=W[k]?0:1;save();render()};$('ck').append(b)})};
+P.badges=()=>{const n=BD.filter(b=>b[3]()).length;A().innerHTML='<h1>Badges 🏅</h1><p class="sub">'+n+' of '+BD.length+' earned · best streak '+mb()+' days</p><button class="btn full" data-go="recap" style="margin:0 0 12px">📅 Weekly recap'+(S.pro?'':' 🔒')+'</button><div class="badges">'+BD.map(b=>'<div class="bd '+(b[3]()?'':'lock')+'"><span>'+b[0]+'</span><b>'+b[1]+'</b><div class="m">'+b[2]+'</div></div>').join('')+'</div>';bind()};
+P.me=()=>{const u=U();A().innerHTML='<h1>Me 👤</h1><p class="sub">'+esc(S.cur)+'</p>'+
+ '<div class="card"><h2>🔊 Sound &amp; haptics '+(S.pro?'':'(Pro)')+'</h2><button class="btn" id="sn">'+(S.snd!==false?'On ✓':'Off')+'</button></div><div class="card"><h2>☁️ Cloud sync</h2><p class="m" style="margin:0">'+(DB?'On: your habits are saved to your Claude account.':'Off: open this app signed in to Claude to turn syncing on.')+'</p></div><div class="card"><h2>⏰ Daily reminder</h2><div class="row" style="margin-top:0"><button class="btn" id="rt">'+(S.rem.on?'On ✓':'Turn on')+'</button><input id="rtm" type="time" value="'+S.rem.t+'" style="width:auto;margin:0"></div><p class="m">Notifications work while Ember is open in your browser. Ember also shows a banner when it is check-in time.</p></div>'+
+ '<div class="card"><h2>🦊 Mascot skin '+(S.pro?'':'(Pro)')+'</h2><div class="row" id="sk" style="margin-top:0"></div></div><div class="card"><h2>🎨 Themes '+(S.pro?'':'(Pro)')+'</h2><div class="row" id="th" style="margin-top:0"></div></div>'+
+ (S.pro?'<div class="card"><h2>⭐ You are Pro</h2><p class="m" style="margin:0">Thanks for supporting Ember!</p></div>':'<div class="card pro"><h2>⭐ Go Pro</h2><button class="btn full" data-pro style="margin-top:0">Unlock Pro</button></div>')+
+ '<button class="btn full" id="lo" style="margin-top:auto;background:var(--line);color:var(--ink)">Log out</button>';bind();
+ $('rt').onclick=async()=>{S.rem.on=!S.rem.on;if(S.rem.on){try{await Notification.requestPermission()}catch(e){}}save();render()};
+ $('rtm').onchange=e=>{S.rem.t=e.target.value;save()};$('sn').onclick=()=>{if(!S.pro){openM();return}S.snd=S.snd===false;save();render()};
+ const LL=lvl(XP());[['','Classic',0],['ocean','🌊 Ocean',0],['pink','🎀 Pink',0],['sunset','🌅 Sunset',1],['galaxy','🪐 Galaxy',2],['neon','⚡ Neon',3]].forEach(([t,l,m])=>{const b=document.createElement('button');b.className='gb'+(S.pro&&S.theme===t?' on':'');b.textContent=(S.pro||!t?'':'🔒 ')+(S.pro&&LL<m?'🔒 Lv'+(m+1)+' ':'')+l;b.onclick=()=>{if(!t){S.theme='';save();render()}else if(!S.pro)openM();else if(LL<m)toast('Reach Level '+(m+1)+' to unlock');else{S.theme=t;save();render()}};$('th').append(b)});
+ [['🔥',0],['🦊',1],['🐲',2],['🦄',2],['🐺',3]].forEach(([e,m])=>{const b=document.createElement('button');b.className='gb'+((S.skin||'🔥')===e?' on':'');b.style.fontSize='24px';b.textContent=(S.pro&&LL<m?'🔒':e);b.onclick=()=>{if(!S.pro)openM();else if(LL<m)toast('Reach Level '+(m+1)+' to unlock');else{S.skin=e;save();render()}};$('sk').append(b)});
+ $('lo').onclick=()=>{S.cur=null;msg={};save();page='auth';mode='in';render()}};
+P.friends=()=>{A().innerHTML='<h1>Friends 👯</h1><p class="sub">7-day challenge: most check-ins this week wins. Send a 🔥 cheer!</p>'+buddyCard()+
+ (DB?'<div class="card fill">'+(Q.length?Q.map((x,i)=>'<div class="habit"><b style="width:28px">'+(i<3?['🥇','🥈','🥉'][i]:i+1)+'</b><div class="nm"><b>'+esc(x.name||'Friend')+(x.id===UID?' (you)':'')+'</b><div class="m">🏅 '+(x.badges||0)+' badges · '+(x.week||0)+' check-ins this week</div></div><span class="st">'+(x.streak||0)+'🔥</span>'+(x.id!==UID?'<button class="del" data-bd="'+x.id+'" style="font-size:22px">🤝</button><button class="del" data-ch="'+x.id+'" style="font-size:22px">💌</button>':'')+'</div>').join(''):'<p class="m">Nobody yet. Complete a habit to appear!</p>')+'</div>':'<div class="card fill"><h2>☁️ Friends need cloud sync</h2><p class="m">Open Ember while signed in to Claude to join the leaderboard.</p></div>')+'<button class="btn full" id="inv">Copy invite link</button>';
+ A().querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>cheer(b.dataset.ch,b));A().querySelectorAll('[data-bd]').forEach(b=>b.onclick=()=>{if(!S.pro){openM();return}S.buddy=b.dataset.bd;save();render()});
+ $('inv').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);$('inv').textContent='Link copied ✓'}catch(e){try{await navigator.share({url:location.href})}catch(x){}}}};
+function burst(l){for(let i=0;i<14;i++){const s=document.createElement('span');s.textContent=pick(l||['🎉','✨','🔥','⭐','💖']);s.style.cssText='position:fixed;left:50%;top:45%;font-size:26px;z-index:20;pointer-events:none;transition:transform 1s ease-out,opacity 1s';document.body.append(s);requestAnimationFrame(()=>{s.style.transform='translate('+(Math.random()*300-150)+'px,'+(Math.random()*300-200)+'px) rotate('+Math.random()*360+'deg)';s.style.opacity=0});setTimeout(()=>s.remove(),1100)}}
+async function push(){if(!DB||!UID||!U().name)return;try{const o=Object.assign({},S);delete o.accts;delete o.cur;
+ await DB.collection('data/users/'+UID).doc('state').set({json:JSON.stringify(o)});
+ await DB.collection('board').doc(UID).set({name:U().name,best:mb(),streak:Math.max(0,...S.habits.map(streak)),week:S.habits.reduce((a,h)=>a+h.done.filter(k=>k>=key(ago(6))).length,0),badges:BD.filter(b=>b[3]()).length,dn:S.habits.filter(h=>h.done.includes(today)).length,tot:S.habits.length,dt:today,t:Date.now()})}catch(e){}}
+async function cloud(){try{const d=await claude.use('db'),u=await claude.use('user');if(!d||!u)return;const id=await u.id();if(!id)return;DB=d;UID=id;
+ const r=await d.collection('data/users/'+id).doc('state').get();
+ if(r.exists&&!S.habits.length&&!Object.keys(S.moods).length){try{const o=JSON.parse(r.data().json);Object.keys(o).forEach(k=>{if(k!=='accts'&&k!=='cur')S[k]=o[k]});save()}catch(e){}}
+ d.collection('board').orderBy('week','desc').limit(20).onSnapshot(q=>{Q=q.docs.map(x=>Object.assign({id:x.id},x.data()));if(page==='friends')render()},()=>{});
+ d.collection('cheers').orderBy('t','desc').limit(50).onSnapshot(q=>{Q2=q.docs.map(x=>x.data());if(page==='home'&&document.activeElement!==$('new'))render()},()=>{});
+ if(!['auth','setup'].includes(page))render();push()}catch(e){}}
+let AC;function tone(f,t,v,at){if(!S.pro||S.snd===false)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),n=AC.currentTime+(at||0);o.frequency.value=f;g.gain.setValueAtTime(v,n);g.gain.exponentialRampToValueAtTime(.001,n+t);o.connect(g);g.connect(AC.destination);o.start(n);o.stop(n+t)}catch(e){}}
+function chime(){tone(660,.25,.15,0);tone(880,.25,.15,.12);tone(1320,.4,.12,.24);try{if(S.pro&&S.snd!==false)navigator.vibrate(30)}catch(e){}}
+function bell(){tone(528,1.8,.2,0);tone(792,1.8,.1,0)}
+const LV=[['Spark',0],['Flame',50],['Blaze',150],['Inferno',300]];
+const PK={'😴 Sleep better':['Screens off 30 min before bed 📵','Lights out on time 🌙','Water in the morning 💧'],'🚶 Move more':['10 minute walk 🚶','Stretch 🧘','Take the stairs 🪜'],'🌿 Feel calmer':['Breathe for 1 minute 🌬️','Write one gratitude 🙏','Step outside 🌿'],'🎯 Focus':['Plan my top 3 tasks 🎯','25 minute focus block ⏱️','Phone away while I work 📵']};
+const XP=()=>S.habits.reduce((a,h)=>a+h.done.length*10,0)+Object.keys(S.moods).length*5+S.med*20+Object.values(S.rewind).filter(r=>r.a||r.b||r.c).length*10+Object.values(S.well).filter(w=>w.w>=8).length*10+Object.keys(S.qd).length*15+Object.values(S.pg).reduce((a,b)=>a+b,0)*10+S.focus*20;
+const lvl=x=>LV.reduce((a,l,i)=>x>=l[1]?i:a,0);
+function proHome(){
+ if(!S.pro)return '<div class="card pro"><h2>🔥 Meet your Ember buddy</h2><p class="m" style="margin:0">Levels, daily quests, streak freeze, weekly recap, sounds, cheers and starter packs are Pro.</p><button class="btn full" data-pro>Unlock Pro</button></div>';
+ const u=U(),x=XP(),L=lvl(x),nx=LV[L+1],yd=key(ago(1)),d=S.habits.filter(h=>h.done.includes(today)).length;
+ const q=[['✅','Check off a habit',S.habits.some(h=>h.done.includes(today))],['😊','Log your mood',!!S.moods[today]],['🧘','Meditate or unwind',!!(S.medd[today]||(S.rewind[today]&&(S.rewind[today].a||S.rewind[today].b||S.rewind[today].c)))]],qn=q.filter(a=>a[2]).length;
+ if(qn===3&&!S.qd[today]){S.qd[today]=1;save();setTimeout(()=>{burst();chime()},300)}
+ const sleepy=S.habits.length&&!S.habits.some(h=>h.done.some(k=>k>=yd)),ch=Q2.filter(c=>c.to===UID).length;
+ const say=sleepy?'I missed you, '+u.name+'... let us light the fire again 😴':(d&&d===S.habits.length)?'All done, '+G[u.g].call+'! You are on fire 🔥':d?'Nice, '+u.name+'! '+(S.habits.length-d)+' left today 💪':'Hey '+G[u.g].call+', let us light the fire today 🔥';
+ const canF=S.fz>0&&!S.frz[yd]&&S.habits.some(h=>h.done.length)&&!S.habits.some(h=>h.done.includes(yd));
+ return '<div class="card mas"><div class="face '+(sleepy?'sleep':'')+'" id="mf" style="font-size:'+(64+L*10)+'px">'+(S.skin||'🔥')+'</div><div class="say">'+esc(say)+'</div><div class="m">Level '+(L+1)+' · '+LV[L][0]+' · '+x+' XP'+(nx?' · '+(nx[1]-x)+' to '+nx[0]:'')+'</div><div class="bar"><i style="width:'+(nx?Math.min(100,(x-LV[L][1])/(nx[1]-LV[L][1])*100):100)+'%"></i></div>'+(ch?'<div class="m">💌 '+ch+' cheer'+(ch>1?'s':'')+' from friends</div>':'')+'</div>'+
+ (canF?'<div class="card"><h2>❄️ Streak freeze</h2><p class="m" style="margin:0">You missed yesterday. Protect your streak!</p><button class="btn full" id="fz">Use a freeze ('+S.fz+' left)</button></div>':'')+
+ '<div class="card"><h2>🎯 Daily quests <span class="m">'+qn+'/3 · finish all for +15 XP</span></h2>'+q.map(a=>'<div class="habit"><span style="font-size:22px">'+(a[2]?'✅':a[0])+'</span><b class="nm" style="opacity:'+(a[2]?.5:1)+'">'+a[1]+'</b></div>').join('')+'</div>'+
+ (S.habits.length?'':'<div class="card"><h2>🎯 Pick a starter pack</h2><div class="row" style="margin-top:0">'+Object.keys(PK).map(k=>'<button class="gb" data-pk="'+k+'">'+k+'</button>').join('')+'</div></div>')+'<div class="card"><h2>✍️ Note for today</h2><textarea id="nt" rows="2" placeholder="How was your day?">'+esc(S.notes[today]||'')+'</textarea></div>'}
+function proBind(){const nt=$('nt');if(nt)nt.oninput=()=>{S.notes[today]=nt.value;save()};A().querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{if(!S.pro){openM();return}S.hi=+b.dataset.e;go('hedit')});const f=$('mf');if(f)f.onclick=()=>{f.classList.remove('hop');void f.offsetWidth;f.classList.add('hop');chime()};
+ const z=$('fz');if(z)z.onclick=()=>{S.frz[key(ago(1))]=1;S.fz--;save();burst(['❄️','✨']);render()};
+ A().querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{PK[b.dataset.pk].forEach(n=>S.habits.push({name:n,done:[]}));save();burst();chime();render()})}
+P.recap=()=>{const wk=S.habits.reduce((a,h)=>a+h.done.filter(k=>k>=key(ago(6))).length,0),ms=[0,1,2,3,4,5,6].map(i=>S.moods[key(ago(i))]).filter(Boolean),av=ms.length?MOODS[Math.round(ms.reduce((a,b)=>a+b,0)/ms.length)-1]:'—',x=XP(),L=lvl(x);
+ const txt='My week on Ember 🔥 '+wk+' check-ins · best streak '+mb()+' days · level '+(L+1)+' '+LV[L][0];
+ A().innerHTML=hd('📅 Your week','badges')+'<div class="card fill" style="text-align:center"><div style="font-size:60px">🔥</div><h2>'+esc(U().name)+'\'s week</h2><div class="rc"><div><b>'+wk+'</b><span class="m">check-ins</span></div><div><b>'+mb()+'</b><span class="m">best streak</span></div><div><b>'+av+'</b><span class="m">avg mood</span></div><div><b>'+BD.filter(b=>b[3]()).length+'</b><span class="m">badges</span></div></div><p class="m">'+LV[L][0]+' level · '+x+' XP</p><button class="btn full" id="shr">Share my week</button></div>';
+ bind();$('shr').onclick=async()=>{try{await navigator.share({text:txt})}catch(e){try{await navigator.clipboard.writeText(txt);$('shr').textContent='Copied ✓'}catch(z){}}}};
+async function cheer(to,b){if(!S.pro){openM();return}try{await DB.collection('cheers').doc(to+'_'+UID+'_'+today).set({to:to,from:UID,name:U().name,t:Date.now()});b.textContent='✅';burst(['🔥','💖']);chime()}catch(e){b.textContent='⚠️'}}
+function toast(t){const d=document.createElement('div');d.textContent=t;d.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:20px;z-index:30;font-weight:700';document.body.append(d);setTimeout(()=>d.remove(),2200)}
+function buddyCard(){const b=Q.find(x=>x.id===S.buddy);if(!b)return S.pro?'<p class="m">Tap 🤝 on a friend to make them your accountability buddy.</p>':'';return '<div class="card"><h2>🤝 Your buddy: '+esc(b.name||'Friend')+'</h2><div class="m">'+(b.dt===today?'Today: '+b.dn+'/'+b.tot+' habits done '+(b.tot&&b.dn===b.tot?'✅':''):'No check-in yet today')+' · 🔥 '+(b.streak||0)+' · '+(b.week||0)+' this week</div></div>'}
+const PRG={calm:{n:'Calm Reset',e:'🌿',d:[['Breathe','Take 5 slow breaths. In for 4, out for 6.'],['Notice','Name 3 things you can see, hear and feel.'],['Unplug','Spend 20 minutes with no screen.'],['Move','Stretch slowly for 5 minutes.'],['Release','Write down one worry, then let it go.'],['Gratitude','Send someone a thank you message.'],['Rest','Do a 5 minute meditation in Ember.']]},
+sleep:{n:'Sleep Better',e:'🌙',d:[['Set a time','Pick a bedtime and set a reminder.'],['Wind down','Dim the lights one hour before bed.'],['No caffeine','Skip caffeine after 2 pm.'],['Screens off','Put your phone away 30 minutes before bed.'],['Brain dump','Write tomorrow top 3 tasks before bed.'],['Cool and dark','Make your room cool and dark.'],['Review','Notice how you feel. Keep what worked.']]},
+glow:{n:'Morning Glow',e:'🌅',d:[['Water first','Drink a glass of water when you wake.'],['Sunlight','Get 5 minutes of daylight.'],['Move','Do 10 squats or a short walk.'],['Intention','Write one goal for today.'],['Get hyped','Open the Hype page before your day starts.'],['Easy win','Make your bed or tidy one spot.'],['Celebrate','List your 3 best wins this week.']]}};
+P.prog=()=>{const id=S.pgSel||'calm',pr=PRG[id],n=S.pg[id]||0,done=S.pgd[id]===today,c=G[U().g].call;
+ A().innerHTML=hd('🗓️ Programs')+'<div class="row" style="margin:0 0 12px">'+Object.keys(PRG).map(k=>'<button class="gb'+(k===id?' on':'')+'" data-pp="'+k+'">'+PRG[k].e+' '+PRG[k].n+'</button>').join('')+'</div><div class="card fill"><h2>'+pr.e+' '+pr.n+' · '+Math.min(n,7)+'/7 days</h2><div class="bar"><i style="width:'+n/7*100+'%"></i></div>'+(n>=7?'<div class="big">🎉 Program complete! You did it, '+c+'.</div>':'<div class="m">Day '+(n+1)+'</div><div class="big" style="flex:none;margin:8px 0"><div><b>'+pr.d[n][0]+'</b><br>'+pr.d[n][1]+' You got this, '+c+'!</div></div><button class="btn full" id="pd"'+(done?' disabled style="opacity:.5"':'')+'>'+(done?'Done for today ✅ Come back tomorrow':'I did it today ✅')+'</button>')+'</div>';
+ bind();A().querySelectorAll('[data-pp]').forEach(b=>b.onclick=()=>{S.pgSel=b.dataset.pp;save();render()});
+ const pd=$('pd');if(pd&&!done)pd.onclick=()=>{S.pg[id]=n+1;S.pgd[id]=today;save();burst();chime();render()}};
+P.ins=()=>{const md=Object.keys(S.moods),av=a=>a.reduce((x,y)=>x+y,0)/a.length,R=[];
+ const wm=md.filter(k=>S.medd[k]).map(k=>S.moods[k]),nm=md.filter(k=>!S.medd[k]).map(k=>S.moods[k]);
+ if(wm.length>=2&&nm.length>=2){const d=av(wm)-av(nm);R.push(['🧘',d>.2?'You feel better on days you meditate':d<-.2?'Your mood is lower on meditation days. Maybe you reach for it when stressed?':'Meditation days feel about the same as other days','Mood '+av(wm).toFixed(1)+' vs '+av(nm).toFixed(1)+' out of 5'])}
+ const dn=k=>S.habits.some(h=>h.done.includes(k)),wh=md.filter(dn).map(k=>S.moods[k]),nh=md.filter(k=>!dn(k)).map(k=>S.moods[k]);
+ if(wh.length>=2&&nh.length>=2){const d=av(wh)-av(nh);R.push(['✅',d>.2?'Checking off habits lifts your mood':d<-.2?'Your mood is lower on habit days. Go easy on yourself.':'Your mood is steady whether or not you check in','Mood '+av(wh).toFixed(1)+' vs '+av(nh).toFixed(1)+' out of 5'])}
+ const dc=[0,0,0,0,0,0,0];S.habits.forEach(h=>h.done.forEach(k=>dc[new Date(k+'T12:00:00').getDay()]++));const mx=Math.max(...dc);
+ if(mx>0){R.push(['📅','Your strongest day is '+['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dc.indexOf(mx)],mx+' check-ins so far'])}
+ const ym=today.slice(0,7),mc=S.habits.reduce((a,h)=>a+h.done.filter(k=>k.startsWith(ym)).length,0),mm=md.filter(k=>k.startsWith(ym)).map(k=>S.moods[k]);
+ A().innerHTML=hd('📊 Insights')+(R.length?R.map(r=>'<div class="card"><div style="font-size:30px">'+r[0]+'</div><b>'+r[1]+'</b><div class="m">'+r[2]+'</div></div>').join(''):'<div class="card"><b>Keep logging!</b><div class="m">Log your mood and habits for about a week and Ember will start finding your patterns.</div></div>')+'<div class="card fill"><h2>🗓️ This month</h2><div class="rc"><div><b>'+mc+'</b><span class="m">check-ins</span></div><div><b>'+(mm.length?MOODS[Math.round(av(mm))-1]:'—')+'</b><span class="m">avg mood</span></div><div><b>'+mb()+'</b><span class="m">best streak</span></div><div><b>'+XP()+'</b><span class="m">total XP</span></div></div></div>';bind()};
+P.focus=()=>{A().innerHTML=hd('⏱️ Focus')+'<div class="card fill" style="text-align:center"><div class="m" id="fm">Focus on one thing. +20 XP for each full session.</div><div id="ft" style="font-size:64px;font-weight:800;margin:auto 0">25:00</div><div class="row"><button class="btn" id="f1" style="flex:1">Focus 25</button><button class="btn" id="f2" style="flex:1">Break 5</button></div><div class="m" style="margin-top:10px">Sessions done: '+S.focus+'</div></div>';bind();
+ const run=(mins,f)=>{clearInterval(timer);const end=Date.now()+mins*60000;$('fm').textContent=f?'Stay with it. You can do this 🎧':'Take a breather ☕';
+  timer=setInterval(()=>{const r=end-Date.now(),t=$('ft');if(!t){clearInterval(timer);return}
+   if(r<=0){clearInterval(timer);t.textContent='00:00';chime();bell();if(f){S.focus++;save();burst();$('fm').textContent='Session complete! +20 XP 🎉'}else $('fm').textContent='Break over. Ready?';return}
+   t.textContent=String(Math.floor(r/60000)).padStart(2,'0')+':'+String(Math.floor(r%60000/1000)).padStart(2,'0')},250)};
+ $('f1').onclick=()=>run(25,1);$('f2').onclick=()=>run(5,0)};
+P.year=()=>{let cells='';const tot=Math.max(1,S.habits.length),f=ago(364).getDay();for(let i=0;i<f;i++)cells+='<i></i>';
+ for(let i=364;i>=0;i--){const k=key(ago(i)),c=S.habits.filter(h=>h.done.includes(k)).length,l=c?Math.ceil(c/tot*4):0;cells+='<i title="'+k+'" style="'+(l?'background:color-mix(in srgb,var(--acc) '+l*25+'%,var(--line))':'')+'"></i>'}
+ const rows=[];S.habits.forEach(h=>h.done.forEach(k=>rows.push(k+','+h.name.replace(/,/g,' ')+',done')));Object.keys(S.moods).forEach(k=>rows.push(k+',mood,'+S.moods[k]));
+ const csv='date,item,value\n'+rows.sort().join('\n');
+ A().innerHTML=hd('📆 Year view')+'<div class="card"><div class="hm" id="hm">'+cells+'</div><div class="m">Darker means more habits done that day.</div></div><div class="card fill"><h2>📤 Export my data</h2><textarea id="csv" rows="5" readonly style="flex:1"></textarea><button class="btn full" id="cp">Copy as CSV</button></div>';
+ bind();$('csv').value=csv;$('hm').scrollLeft=1e5;$('cp').onclick=async()=>{try{await navigator.clipboard.writeText(csv);$('cp').textContent='Copied ✓'}catch(e){$('csv').select();toast('Select and copy the text above')}}};
+P.hedit=()=>{const h=S.habits[S.hi];if(!h){go('home');return}h.d=h.d||[0,1,2,3,4,5,6];
+ A().innerHTML=hd('⚙️ '+esc(h.name),'home')+'<div class="card fill"><h2>Repeat on</h2><div class="row" id="dw" style="margin-top:0"></div><h2 style="margin-top:16px">Reminder for this habit</h2><div class="row" style="margin-top:0"><input id="hrt" type="time" value="'+(h.rt||'')+'" style="margin:0;width:auto"><button class="btn" id="hc">Clear</button></div><p class="m">Reminders pop up while Ember is open.</p></div>';bind();
+ 'SMTWTFS'.split('').forEach((c,i)=>{const b=document.createElement('button');b.className='gb'+(h.d.includes(i)?' on':'');b.style.padding='10px 0';b.textContent=c;b.onclick=()=>{const k=h.d.indexOf(i);if(k>=0){if(h.d.length>1)h.d.splice(k,1)}else h.d.push(i);save();render()};$('dw').append(b)});
+ $('hrt').onchange=e=>{h.rt=e.target.value;save()};$('hc').onclick=()=>{h.rt='';save();render()}};
+setInterval(()=>{if(!S.cur||!S.pro)return;S.habits.forEach(h=>{if(h.rt&&h.rt===hm()&&!h.done.includes(today)&&h.lr!==today){h.lr=today;save();try{new Notification('Ember 🔥',{body:'Time for: '+h.name})}catch(e){}toast('⏰ '+h.name)}})},20000);
+async function proCheck(){const q=new URLSearchParams(location.search);
+ if(q.get('token')){S.token=q.get('token');save()}
+ if(q.get('paid')==='cancelled')toast('Payment cancelled');if(q.get('paid')==='failed')toast('Payment could not be verified');
+ if(q.get('paid')||q.get('token'))history.replaceState(null,'',location.pathname);
+ if(!S.token){if(S.pro){S.pro=false;save();render()}return}
+ try{const j=await(await fetch('/api/status?token='+encodeURIComponent(S.token))).json();
+  if(!!j.active!==S.pro){S.pro=!!j.active;save();render();if(j.active)toast('Welcome to Pro 🎉')}}catch(e){}}
+const openM=()=>$('modal').classList.add('show'),closeM=()=>$('modal').classList.remove('show');
+$('close').onclick=closeM;$('buy').onclick=async()=>{const pl=document.querySelector('.plan.on').dataset.p,b=$('buy');b.disabled=true;b.textContent='Opening secure checkout...';
+ try{const r=await fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:pl,email:S.cur,name:U().name||''})}),j=await r.json();if(!j.link)throw 0;location.href=j.link}
+ catch(e){b.disabled=false;b.textContent='Try again';toast('Could not start checkout')}};
+document.querySelectorAll('.plan').forEach(p=>p.onclick=()=>{document.querySelectorAll('.plan').forEach(x=>x.classList.remove('on'));p.classList.add('on');$('buy').textContent='Subscribe'});
+setInterval(()=>{if(!S.cur||!S.rem.on||hm()!==S.rem.t||S.rem.last===today)return;S.rem.last=today;save();
+ try{new Notification('Ember 🔥',{body:'Time for your daily check-in!'})}catch(e){}if(page==='home')render()},20000);
+page=!S.cur||!S.accts[S.cur]?'auth':(U().name?'home':'setup');if(page==='auth')mode=Object.keys(S.accts).length?'in':'up';
+render();cloud();proCheck();
+</script></body></html>
